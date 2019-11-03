@@ -4,21 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.misael.appchat.LoginActivity">
+    tools:context="com.misael.appchat.RegisterActivity">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tLogin"
+        android:id="@+id/tUsername"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="196dp"
+        android:layout_marginTop="168dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/loginHint"
+        android:hint="@string/usernameHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editUsername"
+            android:layout_width="match_parent"
+            android:layout_height="68dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tEmail"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        android:hint="@string/loginHint"
+        app:layout_constraintEnd_toEndOf="@+id/tUsername"
+        app:layout_constraintStart_toStartOf="@+id/tUsername"
+        app:layout_constraintTop_toBottomOf="@+id/tUsername">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -35,10 +54,9 @@
         android:layout_height="80dp"
         android:layout_marginTop="24dp"
         android:hint="@string/passwordHint"
-        app:layout_constraintEnd_toEndOf="@+id/tLogin"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tLogin"
-        app:layout_constraintTop_toBottomOf="@+id/tLogin">
+        app:layout_constraintEnd_toEndOf="@+id/tEmail"
+        app:layout_constraintStart_toStartOf="@+id/tEmail"
+        app:layout_constraintTop_toBottomOf="@+id/tEmail">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -50,28 +68,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnEnter"
+        android:id="@+id/btnRegister"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="58dp"
         android:layout_marginTop="32dp"
-        android:text="@string/enterButton"
+        android:text="@string/signinButton"
         android:textColor="#7517bd"
         app:layout_constraintEnd_toEndOf="@+id/tSenha"
         app:layout_constraintStart_toStartOf="@+id/tSenha"
         app:layout_constraintTop_toBottomOf="@+id/tSenha" />
-
-    <TextView
-        android:id="@+id/txtAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/signIn"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/btnEnter"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="@+id/btnEnter"
-        app:layout_constraintTop_toBottomOf="@+id/btnEnter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

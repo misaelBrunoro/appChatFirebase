@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "173516220306",
+    "firebase_url": "https://appchat-fab87.firebaseio.com",
+    "project_id": "appchat-fab87",
+    "storage_bucket": "appchat-fab87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173516220306:android:3467157270a4febabb834b",
+        "android_client_info": {
+          "package_name": "com.misael.appchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173516220306-tejgbt8saouqsdpto9a0vrnc9ubifn2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy_rZs8tBbiOPSULK4MzWvfRjKoPv5MQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173516220306-tejgbt8saouqsdpto9a0vrnc9ubifn2r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
