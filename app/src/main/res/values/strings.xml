@@ -6,4 +6,5 @@
     <string name="enterButton">Entrar</string>
     <string name="usernameHint">Username</string>
     <string name="signinButton">Cadastrar</string>
+    <string name="btnphoto">Foto</string>
 </resources>
