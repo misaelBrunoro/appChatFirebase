@@ -1,4 +1,4 @@
-package com.misael.appchat;
+package com.misael.appchat.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +24,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.misael.appchat.R;
+import com.misael.appchat.model.User;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -73,22 +76,24 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
-            mSelectedURI = data.getData();
+            if (data != null) {
+                mSelectedURI = data.getData();
 
-            Bitmap bitmap = null;
-            try {
-                if (android.os.Build.VERSION.SDK_INT >= 29) {
-                    // To handle deprication use
-                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), mSelectedURI));
-                } else{
-                    // Use older version
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedURI);
+                Bitmap bitmap = null;
+                try {
+                    if (android.os.Build.VERSION.SDK_INT >= 29) {
+                        // To handle deprication use
+                        bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), mSelectedURI));
+                    } else {
+                        // Use older version
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedURI);
+                    }
+                    mImgPhoto.setImageDrawable(new BitmapDrawable(this.getResources(), bitmap));
+                    mBtnPhoto.setAlpha(0);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                mImgPhoto.setImageDrawable(new BitmapDrawable(this.getResources(), bitmap));
-                mBtnPhoto.setAlpha(0);
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -115,20 +120,20 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.i("Teste", task.getResult().getUser().getUid());
-                            savePhotoInFirebase();
+                            Log.i("Register", task.getResult().getUser().getUid());
+                            saveUserInFirebase();
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i("Teste", e.getMessage());
+                        Log.i("Register", e.getMessage());
                     }
                 });
     }
 
-    private void savePhotoInFirebase() {
+    private void saveUserInFirebase() {
         String fileName = UUID.randomUUID().toString();
         final StorageReference ref = FirebaseStorage.getInstance().getReference("/Images/" + fileName);
         ref.putFile(mSelectedURI)
@@ -138,7 +143,34 @@ public class RegisterActivity extends AppCompatActivity {
                         ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                Log.i("Teste", uri.toString());
+                                Log.i("Register", uri.toString());
+
+                                String uid        = FirebaseAuth.getInstance().getUid();
+                                String username   = mEditUsername.getText().toString();
+                                String profireURL = uri.toString();
+
+                                User user = new User(uid, username, profireURL);
+
+                                FirebaseFirestore.getInstance().collection("users")
+                                        .add(user)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.i("Register", documentReference.getId());
+
+                                                Intent intent = new Intent(RegisterActivity.this, MessagesActivity.class);
+
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.i("Register", e.getMessage());
+                                            }
+                                        });
                             }
                         });
                     }
@@ -146,7 +178,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Teste", e.getMessage(), e);
+                        Log.e("Register", e.getMessage(), e);
                     }
                 });
     }

@@ -1,4 +1,4 @@
-package com.misael.appchat;
+package com.misael.appchat.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +35,12 @@ public class LoginActivity extends AppCompatActivity {
                 String senha = mEditPassword.getText().toString();
                 Log.i("Teste", email);
                 Log.i("Teste", senha);
+
+                Intent intent = new Intent(LoginActivity.this, MessagesActivity.class);
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(intent);
             }
         });
 

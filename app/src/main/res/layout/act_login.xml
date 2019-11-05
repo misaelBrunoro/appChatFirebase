@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.misael.appchat.LoginActivity">
+    tools:context="com.misael.appchat.view.LoginActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tLogin"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="196dp"
         android:layout_marginEnd="16dp"
@@ -24,7 +24,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editEmail"
             android:layout_width="match_parent"
-            android:layout_height="68dp" />
+            android:layout_height="50dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -32,7 +32,7 @@
         android:id="@+id/tSenha"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_marginTop="24dp"
         android:hint="@string/passwordHint"
         app:layout_constraintEnd_toEndOf="@+id/tLogin"
@@ -44,7 +44,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="50dp"
             android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>

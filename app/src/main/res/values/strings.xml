@@ -7,4 +7,6 @@
     <string name="usernameHint">Username</string>
     <string name="signinButton">Cadastrar</string>
     <string name="btnphoto">Foto</string>
+    <string name="menuContacts">Contatos</string>
+    <string name="menuLogout">Logout</string>
 </resources>
