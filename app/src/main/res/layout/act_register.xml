@@ -89,7 +89,6 @@
         android:layout_height="58dp"
         android:layout_marginTop="32dp"
         android:text="@string/signinButton"
-        android:textColor="#7517bd"
         app:layout_constraintEnd_toEndOf="@+id/tSenha"
         app:layout_constraintStart_toStartOf="@+id/tSenha"
         app:layout_constraintTop_toBottomOf="@+id/tSenha" />
