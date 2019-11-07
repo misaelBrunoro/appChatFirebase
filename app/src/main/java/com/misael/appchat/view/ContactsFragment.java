@@ -3,9 +3,11 @@ package com.misael.appchat.view;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,9 +30,9 @@ import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.Item;
 import com.xwray.groupie.GroupieViewHolder;
+import com.xwray.groupie.OnItemClickListener;
 
 public class ContactsFragment extends Fragment {
-
     private GroupAdapter adapter;
 
     @Nullable
@@ -43,6 +45,14 @@ public class ContactsFragment extends Fragment {
         adapter = new GroupAdapter();
         rv.setAdapter(adapter);
         rv.setLayoutManager(new LinearLayoutManager(v.getContext()));
+
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull Item item, @NonNull View view) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                startActivity(intent);
+            }
+        });
 
         searchUsers();
 
