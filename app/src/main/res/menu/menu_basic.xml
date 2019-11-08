@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/voltar"
+        android:icon="@drawable/ic_back"
+        android:title=""/>
+    <item
+        android:id="@+id/nome"
+        android:title="Nome"/>
+    <item
+        android:id="@+id/extra"
+        android:title=""/>
+</menu>

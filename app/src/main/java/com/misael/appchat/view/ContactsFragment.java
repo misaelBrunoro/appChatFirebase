@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,6 +51,8 @@ public class ContactsFragment extends Fragment {
             @Override
             public void onItemClick(@NonNull Item item, @NonNull View view) {
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
+                ItemUser itemUser = (ItemUser) item;
+                intent.putExtra("user", itemUser.user);
                 startActivity(intent);
             }
         });
