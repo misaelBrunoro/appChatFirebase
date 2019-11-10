@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -35,6 +36,8 @@ import com.misael.appchat.model.User;
 import java.io.IOException;
 import java.util.UUID;
 
+import dmax.dialog.SpotsDialog;
+
 public class RegisterActivity extends AppCompatActivity {
     private EditText mEditUsername;
     private EditText mEditEmail;
@@ -42,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mBtnRegister;
     private Button mBtnPhoto;
     private ImageView mImgPhoto;
-
+    private AlertDialog dialog;
     private Uri mSelectedURI;
 
     @Override
@@ -114,7 +117,8 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Você deve preencher todos os campos", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        dialog = new SpotsDialog.Builder().setContext(RegisterActivity.this).build();
+        dialog.show();
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -129,6 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.i("Register", e.getMessage());
+                        dialog.hide();
                     }
                 });
     }
@@ -160,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                 Intent intent = new Intent(RegisterActivity.this, PrincipalActivity.class);
 
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
+                                                dialog.hide();
                                                 startActivity(intent);
                                             }
                                         })
@@ -168,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Log.i("Register", e.getMessage());
+                                                dialog.hide();
                                             }
                                         });
                             }
@@ -178,6 +184,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("Register", e.getMessage(), e);
+                        dialog.hide();
                     }
                 });
     }

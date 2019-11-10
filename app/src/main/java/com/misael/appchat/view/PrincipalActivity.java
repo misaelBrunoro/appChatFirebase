@@ -6,9 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.misael.appchat.R;
 
 public class PrincipalActivity extends AppCompatActivity {
@@ -25,6 +30,10 @@ public class PrincipalActivity extends AppCompatActivity {
 
         messagesFragment = new MessagesFragment();
         contactsFragment = new ContactsFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, messagesFragment)
+                .commit();
 
         navigationView = findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(new OnNavigationItemSelectedListener(){
@@ -49,6 +58,22 @@ public class PrincipalActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void updateToken() {
+        final String uid = FirebaseAuth.getInstance().getUid();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+                    @Override
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String token = instanceIdResult.getToken();
+                        if (uid != null) {
+                            FirebaseFirestore.getInstance().collection("users")
+                                    .document(uid)
+                                    .update("token", token);
+                        }
+                    }
+                });
     }
 
     private void verifyAuth() {

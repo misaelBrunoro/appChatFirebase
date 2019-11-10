@@ -3,6 +3,8 @@ package com.misael.appchat.view;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +16,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.misael.appchat.R;
+
+import dmax.dialog.SpotsDialog;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText mEditEmail;
     private EditText mEditPassword;
     private Button mBtnEnter;
     private TextView mTxtAccount;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,26 +54,30 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+                dialog = new SpotsDialog.Builder().setContext(LoginActivity.this).build();
+                dialog.show();
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.i("Teste", task.getResult().getUser().getUid());
 
-                                Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
+                                if (task.isSuccessful()) {
+                                    Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
 
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                                startActivity(intent);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    dialog.hide();
+                                    startActivity(intent);
+                                }
+                                Toast.makeText(LoginActivity.this, "Dados incorretos", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Log.i("Teste", e.getMessage());
+                                dialog.hide();
                             }
                         });
-
             }
         });
 

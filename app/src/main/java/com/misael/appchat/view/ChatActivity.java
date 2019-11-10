@@ -1,6 +1,7 @@
 package com.misael.appchat.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,11 +18,18 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.misael.appchat.model.Contact;
 import com.misael.appchat.model.Message;
+import com.misael.appchat.model.Notification;
 import com.misael.appchat.model.User;
 import com.misael.appchat.R;
 import com.squareup.picasso.Picasso;
@@ -55,6 +63,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendMessage();
+                ediChat.setText("");
             }
         });
 
@@ -75,16 +84,39 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void searchMessages() {
+        if (me != null) {
+            String fromId = me.getUuid();
+            String toId = user.getUuid();
 
+            FirebaseFirestore.getInstance().collection("/chatMessages")
+                    .document(fromId)
+                    .collection(toId)
+                    .orderBy("timestamp", Query.Direction.ASCENDING)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
+
+                            if (!documentChanges.isEmpty()) {
+                                for (DocumentChange doc: documentChanges) {
+                                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                                        Message message = doc.getDocument().toObject(Message.class);
+                                        adapter.add(new ItemMessage(message));
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     private void sendMessage() {
         String text = ediChat.getText().toString();
 
-        String fromId = FirebaseAuth.getInstance().getUid();
-        String toId = user.getUuid();
+        final String fromId = FirebaseAuth.getInstance().getUid();
+        final String toId = user.getUuid();
         long timestamp = System.currentTimeMillis();
-        Message message = new Message(text, fromId, toId, timestamp);
+        final Message message = new Message(text, fromId, toId, timestamp);
 
         if (!message.getText().isEmpty()) {
             FirebaseFirestore.getInstance().collection("/chatMessages")
@@ -94,7 +126,15 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d("Teste", documentReference.getId());
+                            Contact contact = new Contact(toId, user.getUsername(), message.getText(),
+                                                            message.getTimestamp(), user.getProfileURL());
+
+                            FirebaseFirestore.getInstance().collection("/lastMessages")
+                                    .document(fromId)
+                                    .collection("contacts")
+                                    .document(toId)
+                                    .set(contact);
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -110,7 +150,14 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Log.d("Teste", documentReference.getId());
+                            Contact contact = new Contact(toId, user.getUsername(), message.getText(),
+                                                            message.getTimestamp(), user.getProfileURL());
+
+                            FirebaseFirestore.getInstance().collection("/lastMessages")
+                                    .document(toId)
+                                    .collection("contacts")
+                                    .document(fromId)
+                                    .set(contact);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -135,9 +182,16 @@ public class ChatActivity extends AppCompatActivity {
             ImageView imgMsg = viewHolder.itemView.findViewById(R.id.img_message);
 
             txtMsg.setText(message.getText());
-            Picasso.get()
-                    .load(user.getProfileURL())
-                    .into(imgMsg);
+            if (message.getFromId().equals(FirebaseAuth.getInstance().getUid())) {
+                Picasso.get()
+                        .load(me.getProfileURL())
+                        .into(imgMsg);
+            } else {
+                Picasso.get()
+                        .load(user.getProfileURL())
+                        .into(imgMsg);
+            }
+
         }
 
         @Override
