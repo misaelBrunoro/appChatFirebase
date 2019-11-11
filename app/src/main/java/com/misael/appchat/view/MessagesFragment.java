@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 import com.misael.appchat.R;
-import com.misael.appchat.model.ChatApp;
+import com.misael.appchat.app.ChatApp;
+import com.misael.appchat.model.User;
 import com.misael.appchat.model.Contact;
 import com.squareup.picasso.Picasso;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Item;
+import com.xwray.groupie.OnItemClickListener;
 
 import java.util.List;
 
@@ -39,9 +45,6 @@ public class MessagesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frg_messages, container, false);
 
-        ChatApp app = (ChatApp) getActivity().getApplication();
-        getActivity().getApplication().registerActivityLifecycleCallbacks(app);
-
         RecyclerView rv = v.findViewById(R.id.reciyclerLastMessages);
         rv.setLayoutManager(new LinearLayoutManager(v.getContext()));
         adapter = new GroupAdapter();
@@ -49,6 +52,25 @@ public class MessagesFragment extends Fragment {
 
         searchLastMessage();
 
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull Item item, @NonNull View view) {
+                ItemContact contact = (ItemContact) item;
+                String uid = contact.contact.getUuid();
+                FirebaseFirestore.getInstance().collection("/users")
+                        .document(uid)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                User user = documentSnapshot.toObject(User.class);
+                                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
+                            }
+                        });
+            }
+        });
         return v;
     }
 

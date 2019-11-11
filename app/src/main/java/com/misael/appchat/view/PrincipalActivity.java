@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.misael.appchat.R;
+import com.misael.appchat.app.ChatApp;
 
 public class PrincipalActivity extends AppCompatActivity {
     private BottomNavigationView navigationView;
@@ -26,15 +27,20 @@ public class PrincipalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_principal);
 
+        ChatApp app = (ChatApp) getApplication();
+        getApplication().registerActivityLifecycleCallbacks(app);
+
         verifyAuth();
+        updateToken();
 
         messagesFragment = new MessagesFragment();
         contactsFragment = new ContactsFragment();
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, messagesFragment)
-                .commit();
-
+        if (FirebaseAuth.getInstance().getUid() != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, messagesFragment)
+                    .commit();
+        }
         navigationView = findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(new OnNavigationItemSelectedListener(){
             @Override

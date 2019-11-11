@@ -74,6 +74,7 @@ public class ContactsFragment extends Fragment {
                         }
 
                         List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                        adapter.clear();
                         for (DocumentSnapshot doc: docs) {
                             User user = doc.toObject(User.class);
                             if (!user.getUuid().equals(FirebaseAuth.getInstance().getUid())) {
@@ -84,8 +85,8 @@ public class ContactsFragment extends Fragment {
                 });
     }
 
-    private class ItemUser extends Item<GroupieViewHolder> {
-        private final User user;
+    protected class ItemUser extends Item<GroupieViewHolder> {
+        final User user;
 
         private ItemUser(User user) {
             this.user = user;
@@ -107,4 +108,6 @@ public class ContactsFragment extends Fragment {
             return R.layout.item_user;
         }
     }
+
+
 }
