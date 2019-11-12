@@ -163,8 +163,8 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Contact contact = new Contact(toId, user.getUsername(), message.getText(),
-                                                            message.getTimestamp(), user.getProfileURL());
+                            Contact contact = new Contact(toId, me.getUsername(), message.getText(),
+                                                            message.getTimestamp(), me.getProfileURL());
 
                             FirebaseFirestore.getInstance().collection("/lastMessages")
                                     .document(toId)
