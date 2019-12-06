@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_logout"
+        android:title=""/>
+
+    <item
+        android:id="@+id/perfil"
+        android:icon="@drawable/ic_perfil"
+        android:title=""/>
+    <item
         android:id="@+id/messages"
         android:icon="@drawable/ic_message"
         android:title=""/>
@@ -9,9 +18,6 @@
         android:icon="@drawable/ic_contacts"
         android:title=""/>
 
-    <item
-        android:id="@+id/logout"
-        android:icon="@drawable/ic_logout"
-        android:title=""/>
+
 
 </menu>

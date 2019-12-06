@@ -82,12 +82,14 @@ public class MessagesFragment extends Fragment {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
-
-                        for (DocumentChange doc: documentChanges) {
-                            if (doc.getType() == DocumentChange.Type.ADDED) {
-                                Contact contact = doc.getDocument().toObject(Contact.class);
-                                adapter.add(new ItemContact(contact));
+                        if (queryDocumentSnapshots != null) {
+                            List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
+                            adapter.clear();
+                            for (DocumentChange doc: documentChanges) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    Contact contact = doc.getDocument().toObject(Contact.class);
+                                    adapter.add(new ItemContact(contact));
+                                }
                             }
                         }
                     }

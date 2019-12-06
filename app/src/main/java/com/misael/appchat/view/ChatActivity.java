@@ -95,13 +95,16 @@ public class ChatActivity extends AppCompatActivity {
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
+                            if (queryDocumentSnapshots != null) {
+                                List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
 
-                            if (!documentChanges.isEmpty()) {
-                                for (DocumentChange doc: documentChanges) {
-                                    if (doc.getType() == DocumentChange.Type.ADDED) {
-                                        Message message = doc.getDocument().toObject(Message.class);
-                                        adapter.add(new ItemMessage(message));
+                                if (!documentChanges.isEmpty()) {
+                                    adapter.clear();
+                                    for (DocumentChange doc : documentChanges) {
+                                        if (doc.getType() == DocumentChange.Type.ADDED) {
+                                            Message message = doc.getDocument().toObject(Message.class);
+                                            adapter.add(new ItemMessage(message));
+                                        }
                                     }
                                 }
                             }
@@ -163,7 +166,7 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Contact contact = new Contact(toId, me.getUsername(), message.getText(),
+                            Contact contact = new Contact(fromId, me.getUsername(), message.getText(),
                                                             message.getTimestamp(), me.getProfileURL());
 
                             FirebaseFirestore.getInstance().collection("/lastMessages")
