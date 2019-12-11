@@ -21,6 +21,7 @@ public class PrincipalActivity extends AppCompatActivity {
     private BottomNavigationView navigationView;
     private MessagesFragment messagesFragment;
     private ContactsFragment contactsFragment;
+    private PerfilFragment perfilFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
         messagesFragment = new MessagesFragment();
         contactsFragment = new ContactsFragment();
+        perfilFragment = new PerfilFragment();
 
         if (FirebaseAuth.getInstance().getUid() != null) {
             getSupportFragmentManager().beginTransaction()
@@ -59,6 +61,11 @@ public class PrincipalActivity extends AppCompatActivity {
                     case R.id.logout:
                         FirebaseAuth.getInstance().signOut();
                         verifyAuth();
+                        break;
+                    case R.id.perfil:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, perfilFragment)
+                                .commit();
                         break;
                 }
                 return false;

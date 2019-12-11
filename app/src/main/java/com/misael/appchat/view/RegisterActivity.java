@@ -85,10 +85,8 @@ public class RegisterActivity extends AppCompatActivity {
                 Bitmap bitmap = null;
                 try {
                     if (android.os.Build.VERSION.SDK_INT >= 29) {
-                        // To handle deprication use
                         bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), mSelectedURI));
                     } else {
-                        // Use older version
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mSelectedURI);
                     }
                     mImgPhoto.setImageDrawable(new BitmapDrawable(this.getResources(), bitmap));
@@ -113,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
         String email    = mEditEmail.getText().toString();
         String password = mEditPassword.getText().toString();
 
-        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || username.isEmpty() || mSelectedURI == null) {
             Toast.makeText(this, "Você deve preencher todos os campos", Toast.LENGTH_SHORT).show();
             return;
         }
