@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -87,8 +89,24 @@ public class MessagesFragment extends Fragment {
                             adapter.clear();
                             for (DocumentChange doc: documentChanges) {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    Contact contact = doc.getDocument().toObject(Contact.class);
-                                    adapter.add(new ItemContact(contact));
+                                    final Contact contact = doc.getDocument().toObject(Contact.class);
+                                    FirebaseFirestore.getInstance().collection("/users")
+                                            .document(contact.getUuid())
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    contact.setUsername(documentSnapshot.get("username").toString());
+                                                    contact.setPhotoURL(documentSnapshot.get("profileURL").toString());
+                                                    adapter.add(new ItemContact(contact));
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.i("SearchMessages", e.getMessage());
+                                                }
+                                            });
                                 }
                             }
                         }

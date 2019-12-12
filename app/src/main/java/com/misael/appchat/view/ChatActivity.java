@@ -129,8 +129,8 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Contact contact = new Contact(toId, user.getUsername(), message.getText(),
-                                                            message.getTimestamp(), user.getProfileURL());
+                            Contact contact = new Contact(toId, message.getText(),
+                                                            message.getTimestamp());
 
                             FirebaseFirestore.getInstance().collection("/lastMessages")
                                     .document(fromId)
@@ -166,8 +166,8 @@ public class ChatActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            Contact contact = new Contact(fromId, me.getUsername(), message.getText(),
-                                                            message.getTimestamp(), me.getProfileURL());
+                            Contact contact = new Contact(fromId, message.getText(),
+                                                            message.getTimestamp());
 
                             FirebaseFirestore.getInstance().collection("/lastMessages")
                                     .document(toId)

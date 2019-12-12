@@ -114,6 +114,12 @@ public class PerfilFragment extends Fragment {
                                 changePhoto(user);
                             }
                         }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("Perfil", e.getMessage());
+                        }
                     });
         }
     }

@@ -15,6 +15,12 @@ public class Contact {
         this.photoURL = photoURL;
     }
 
+    public Contact(String uuid, String lastMessage, long timestamp) {
+        this.uuid = uuid;
+        this.lastMessage = lastMessage;
+        this.timestamp = timestamp;
+    }
+
     public Contact() { }
 
     public String getUuid() {
