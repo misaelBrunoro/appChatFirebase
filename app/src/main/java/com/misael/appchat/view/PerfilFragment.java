@@ -1,5 +1,6 @@
 package com.misael.appchat.view;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -34,12 +35,15 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
+import dmax.dialog.SpotsDialog;
+
 public class PerfilFragment extends Fragment {
     private ImageView mImgPhoto;
     private Button mBtnPhoto;
     private EditText mEditUsername;
     private Button mBtnEditar;
     private Uri mSelectedURI;
+    private AlertDialog dialog;
 
     @Nullable
     @Override
@@ -100,6 +104,9 @@ public class PerfilFragment extends Fragment {
     }
 
     private void editPerfil() {
+        dialog = new SpotsDialog.Builder().setContext(getActivity()).build();
+        dialog.show();
+
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid != null) {
             FirebaseFirestore.getInstance().collection("users")
@@ -113,6 +120,12 @@ public class PerfilFragment extends Fragment {
                             if (mSelectedURI != null) {
                                 changePhoto(user);
                             }
+
+                            if(!mEditUsername.getText().toString().equals("")){
+                                changeUsername(user);
+                            }
+
+                            dialog.hide();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -122,6 +135,26 @@ public class PerfilFragment extends Fragment {
                         }
                     });
         }
+    }
+
+    private void changeUsername(final User user) {
+        user.setUsername(this.mEditUsername.getText().toString());
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(user.getUuid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("Username", "Nome alterado com sucesso");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("Username", e.getMessage());
+                    }
+                });
     }
 
     private void changePhoto(final User user) {

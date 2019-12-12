@@ -99,7 +99,6 @@ public class ChatActivity extends AppCompatActivity {
                                 List<DocumentChange> documentChanges = queryDocumentSnapshots.getDocumentChanges();
 
                                 if (!documentChanges.isEmpty()) {
-                                    adapter.clear();
                                     for (DocumentChange doc : documentChanges) {
                                         if (doc.getType() == DocumentChange.Type.ADDED) {
                                             Message message = doc.getDocument().toObject(Message.class);
@@ -213,7 +212,7 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public int getLayout() {
             return message.getFromId().equals(FirebaseAuth.getInstance().getUid())
-                    ? R.layout.item_from_message : R.layout.item_to_message;
+                    ? R.layout.item_to_message : R.layout.item_from_message ;
         }
     }
 }
